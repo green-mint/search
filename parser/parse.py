@@ -6,9 +6,9 @@ import csv
 import time
 import os
 
-CSV_TO_WRITE = '/home/green-mint/dev/search/data/fuck.csv'
-XML_SOURCE = "/home/green-mint/dev/search/enwiki-20211220-pages-articles-multistream1.xml"
-ARTICLES_TO_WRITE_DIR = "/home/green-mint/dev/search/data/articles"
+CSV_TO_WRITE = '../data/fuck.csv'
+XML_SOURCE = "../data/enwiki-20211220-pages-articles-multistream1.xml"
+ARTICLES_TO_WRITE_DIR = "../data/articles"
 
 tag_garbage = "{http://www.mediawiki.org/xml/export-0.10/}"
 glen = len(tag_garbage)
@@ -16,7 +16,6 @@ i = 0
 pages = 0
 
 header = ["id", "title", "path_to_file", "updated_at", "another_title"]
-
 
 
 row_dict = {
@@ -44,7 +43,7 @@ with open(CSV_TO_WRITE, 'w') as f:
 
         if event == 'start' and elem.tag[glen:] == "title":
             row_dict["anotherTitle"] = elem.text
-    
+
         if elem.tag[glen:] == "text":
             path_to_file = f"{ARTICLES_TO_WRITE_DIR}/{row_dict['id']}.txt"
             # print(elem.attrib['bytes'])
@@ -55,21 +54,22 @@ with open(CSV_TO_WRITE, 'w') as f:
                 row_dict["text"] = text
                 got_text = True
                 # print(text)
-            
+
         if event == 'start' and elem.tag[glen:] == "timestamp":
             row_dict["updated_at"] = elem.text
-        
-        if event == 'end' and elem.tag[glen:] == "page": 
+
+        if event == 'end' and elem.tag[glen:] == "page":
             if (len(row_dict["title"]) == 0):
                 row_dict["title"] = row_dict["anotherTitle"]
-            
+
             with open(row_dict["path_to_file"], 'w') as f:
                 if not got_text:
                     f.write("")
-                    print(f"no text for {row_dict['id']} {row_dict['anotherTitle']}")
+                    print(
+                        f"no text for {row_dict['id']} {row_dict['anotherTitle']}")
                 else:
                     f.write(row_dict["text"])
-            
+
             writer.writerow(list(row_dict.values())[:-2])
             row_dict["title"] = ""
             row_dict["anotherTitle"] = ""
