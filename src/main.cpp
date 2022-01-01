@@ -22,7 +22,7 @@ int main() {
     cout << "Exists" << endl;
   else
     cout << "Doesn't exist";
-  populateStopWords("data/stop_words.csv", stopWords);
+  populateStopWords(STOPWORDS_FILENAME, stopWords);
   if (stopWords["after"])
     cout << "Exists";
   else
