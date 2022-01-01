@@ -1,6 +1,6 @@
 *.xml
 data/*.xml
-data/articles 
+data/articles* 
 .vscode/ 
 
 # Prerequisites
