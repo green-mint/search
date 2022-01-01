@@ -1,6 +1,9 @@
 #include <iostream>
+#include <unordered_map>
 #include "../include/csv.h"
 #include "../include/trie.h"
+#include "../include/utils.h"
+
 
 using namespace std;
 
@@ -14,6 +17,9 @@ int main() {
   while (in.read_row(name, cms, snake_level)) {
     std::cout << name << " " << cms << " " << snake_level << std::endl;
   }
+
+  std::unordered_map<std::string, char> stopWords;
+  populateStopWords("data/stop_words.txt", stopWords);
 
   Trie trie;
   trie.insert("hello");
