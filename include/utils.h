@@ -12,16 +12,14 @@ struct Article {
   string title;
   string path_to_file;
   date updated_at;
-  string another_title;
 
   Article() { }
 
-  Article(string id, string title, string path_to_file, date updated_at, string another_title) {
+  Article(string id, string title, string path_to_file, date updated_at) {
     this->id = id;
     this->title = title;
     this->path_to_file = path_to_file;
     this->updated_at = updated_at;
-    this->another_title = another_title;
   };
 };
 

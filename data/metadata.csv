@@ -1,4 +1,4 @@
-id,title,path_to_file,updated_at,another_title
+id,title,path_to_file,updated_at
 1,Computer accessibility,../data/articles/1.txt,2021-01-23T15:15:01Z
 2,Anarchism,../data/articles/2.txt,2021-12-17T16:06:55Z
 3,History of Afghanistan,../data/articles/3.txt,2017-06-05T04:18:18Z
