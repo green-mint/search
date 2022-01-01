@@ -2,6 +2,7 @@ CC=g++
 
 INCLUDE_DIR=./include
 SRC_DIR=./src
+OBJ_DIR=./obj
 BIN_DIR=./bin
 
 BIN=main
@@ -14,12 +15,17 @@ CFLAGS=-Wall -Wextra -Wpedantic -g -O0 -std=c++17 $(LINKER_FLAGS) $(INCLUDE_DIR_
 
 all: $(MAIN_BIN)
 
-$(BIN_DIR)/main: $(SRC_DIR)/*.cpp $(INCLUDE_DIR)/*.h
-	$(CC) $(CFLAGS) -o $@ $(SRC_DIR)/*.cpp 
+objs: $(OBJ_DIR)/main.o $(OBJ_DIR)/trie.o $(OBJ_DIR)/utils.o
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/*.h
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR)/main: objs 
+	$(CC) $(CFLAGS) -o $@ $(OBJ_DIR)/*.o 
 
 
 run: $(MAIN_BIN)
 	$(MAIN_BIN)
 
 clean: 
-	rm -rf $(BIN_DIR)/$(BIN)
+	rm -rf $(BIN_DIR)/$(BIN) $(OBJ_DIR)/*.o 
