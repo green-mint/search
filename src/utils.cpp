@@ -25,7 +25,25 @@ void populateMetadata(const string &filename, unordered_map<string, Article> &me
 
   string id, title, path_to_file, updated_at;
   while (in.read_row(id, title, path_to_file, updated_at)) {
-    Article article(id, title, path_to_file, date());
+    cout << "id: " << id << endl;
+    // if (updated_at == "") {
+    //   updated_at = to_iso_extended_string(boost::posix_time::microsec_clock::universal_time());
+    // }
+    toISODate(updated_at);
+    Article article(id, title, path_to_file, date_from_iso_string(updated_at));
     metadata[id] = article;
   }
+}
+
+void toISODate(std::string &date) {
+  std::stringstream ss;
+  char *dateString = (char *) date.c_str();
+
+  char *segment;
+  size_t counter = 0;
+  for (segment = strtok(dateString, "-T"); segment != NULL && counter < 3; segment = strtok(NULL, "-T")) {
+    ss << string(segment);
+    counter++;
+  }
+  date = ss.str();
 }

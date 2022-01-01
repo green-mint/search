@@ -25,3 +25,5 @@ struct Article {
 
 void populateStopWords(const string &filename, unordered_map<string, char> &stopWords);
 void populateMetadata(const string &filename, unordered_map<string, Article> &metadata);
+
+void toISODate(std::string &date);

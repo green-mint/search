@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from typing import List, Dict, Tuple
 import xml.etree.ElementTree as etree
 import codecs
+from datetime import datetime
 import csv
 import time
 import os
@@ -56,8 +57,12 @@ with open(CSV_TO_WRITE, 'w') as f:
                 # print(text)
 
         if event == 'start' and elem.tag[glen:] == "timestamp":
-            row_dict["updated_at"] = elem.text
-
+            date = ""
+            if elem.text:
+                date = elem.text
+            else:
+                date = datetime.now().isoformat()
+            row_dict["updated_at"] = date
         if event == 'end' and elem.tag[glen:] == "page":
             if (len(row_dict["title"]) == 0):
                 row_dict["title"] = row_dict["anotherTitle"]
