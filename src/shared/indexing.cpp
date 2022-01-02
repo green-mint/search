@@ -2,6 +2,7 @@
 #include <HashTable.h>
 #include <fstream>
 #include <unordered_map>
+#include <indexing.h>
 
 using namespace std;
 

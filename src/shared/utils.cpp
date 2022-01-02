@@ -19,12 +19,12 @@ void populateStopWords(const std::string &filename,
 
 void populateMetadata(const string &filename, unordered_map<string, Article> &metadata) {
   io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(filename.c_str());
-  in.read_header(io::ignore_extra_column, "id", "title", "path_to_file", "updated_at");
+  in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
-  string id, title, path_to_file, updated_at;
-  while (in.read_row(id, title, path_to_file, updated_at)) {
+  string id, title, filename, updated_at;
+  while (in.read_row(id, title, filename, updated_at)) {
     toISODate(updated_at);
-    Article article(id, title, path_to_file, date_from_iso_string(updated_at));
+    Article article(id, title, filename, date_from_iso_string(updated_at));
     metadata[id] = article;
   }
 }
@@ -46,32 +46,4 @@ void stemWord(const string &input, string &output) {
   wstring str = converter.from_bytes(input);
   stemmer(str);
   output = converter.to_bytes(str);
-}
-
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, Article> &metadata) {
-  size_t filesread = 0;
-  for (auto it : metadata) {
-    string fileId = it.first;
-    Article &article = it.second;
-
-    ifstream file(CLEANED_ARTICLES_DIR + article.path_to_file);
-    string line;
-
-    char *segment;
-    string stemmedWord;
-    string originalWord;
-    size_t position = 0;
-    while (getline(file, line)) {
-      position = 0;
-      for (segment = strtok((char *) line.c_str(), " "); segment != NULL; segment = strtok(NULL, " ")) {
-        originalWord = string(segment);
-        stemWord(originalWord, stemmedWord);
-        invertedIndex.addWord(stemmedWord, fileId, position);
-        ++position;
-      }
-
-      // cout << "Processed " << article.path_to_file << endl;
-    }
-    if (++filesread == 20) break;
-  }
 }

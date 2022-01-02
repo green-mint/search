@@ -3,6 +3,7 @@
 #include <csv.h>
 #include <trie.h>
 #include <utils.h>
+#include <invertedindex.h>
 
 using namespace std;
 
