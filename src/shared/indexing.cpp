@@ -4,10 +4,13 @@
 #include <unordered_map>
 #include <indexing.h>
 
+#include "../include/csv.h"
+#include "../include/utils.h"
 using namespace std;
 
-void generateLexicon(unordered_map<string, int> &lexiconMap,
-    unordered_map<string, char> stopWords) {
+void generateLexicon(const string &metadataFilename,
+                     unordered_map<string, int> &lexiconMap,
+                     unordered_map<string, char> &stopWords) {
     cout << "Generating lexicon..." << endl;
     int wordID = 1;
 
@@ -18,22 +21,40 @@ void generateLexicon(unordered_map<string, int> &lexiconMap,
     //   else
     //     increment the index of the word in the lexicon
 
-    string inputFile = "data/articles/2.txt";
+    io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>>
+        in(metadataFilename.c_str());
 
-    ifstream file;
-    file.open(inputFile);
+    in.read_header(io::ignore_extra_column, "filename");
 
-    if (!file.is_open()) {
-        cout << "input file cannot be opened" << endl;
-        return;
+    string filename;
+    int iterations = 0;
+    while (in.read_row(filename)) {
+        if (iterations > 5) break;
+        iterations++;
+        string inputFile = "data/articles/";
+
+        // main loop
+        inputFile += filename;
+
+        ifstream file;
+        file.open(inputFile);
+
+        if (!file.is_open()) {
+            cout << "input file cannot be opened" << endl;
+            return;
+        }
+        string originalWord;
+        while (file >> originalWord) {
+            string stemmedWord;
+            stemWord(originalWord, stemmedWord);
+
+            if (!stopWords[stemmedWord])
+                if (!lexiconMap[stemmedWord])
+                    lexiconMap[stemmedWord] = wordID++;
+        }
+
+        file.close();
     }
-    string word;
-    while (file >> word) {
-        if (!stopWords[word])
-            if (!lexiconMap[word]) lexiconMap[word] = wordID++;
-    }
-
-    file.close();
 
     ofstream output;
     string lexicon_file = "data/indexing/lexicon.csv";
@@ -45,7 +66,7 @@ void generateLexicon(unordered_map<string, int> &lexiconMap,
 
     unordered_map<string, int>::iterator it;
     for (it = lexiconMap.begin(); it != lexiconMap.end(); it++) {
-        cout << it->first << ", " << it->second << endl;
+        // cout << it->first << ", " << it->second << endl;
         output << it->first << ", " << it->second << "\n";
     }
 
