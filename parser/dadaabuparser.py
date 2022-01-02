@@ -4,9 +4,9 @@ import re
 import csv
 
 dirname = os.path.abspath(os.path.dirname(__file__))
-in_filename = sys.argv[1]
-in_dir = sys.argv[2]
-out_dir = sys.argv[3]
+in_filename = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/metadata.csv"
+in_dir = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/articles-randi"
+out_dir = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/articles"
 
 filenames_to_process = set()
 
@@ -37,10 +37,12 @@ def clean_files(files, in_dir, out_dir):
 
                 with open(os.path.join(out_dir, file), "w") as f_out:
                     f_out.write(text)
+        # input("Press Enter to continue...")
 
 
 def clean_text(text):
-    return ' '.join(re.split(r'\W|\d', text))
+    words = re.split(r'\W|\d', text)
+    return ' '.join([word.lower().strip() for word in words if word.strip()])
 
 
 if __name__ == '__main__':

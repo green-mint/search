@@ -12,5 +12,4 @@ with open(in_filename, 'r') as f:
     text_cleaned = re.split(r'\W|\d', text)
 
     with open(out_filename, 'w') as f_out:
-        for word in text_cleaned:
-            f_out.write(' '.join(text_cleaned))
+        f_out.write(' '.join(text_cleaned))
