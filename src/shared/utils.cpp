@@ -1,5 +1,5 @@
-#include "../include/utils.h"
-#include "../include/csv.h"
+#include <utils.h>
+#include <csv.h>
 #include <fstream>
 #include <string.h>
 

@@ -1,11 +1,12 @@
-#include "../include/indexing.h"
 
+#include <HashTable.h>
 #include <fstream>
 #include <unordered_map>
+
 using namespace std;
 
 void generateLexicon(unordered_map<string, int> &lexiconMap,
-                     unordered_map<string, char> stopWords) {
+    unordered_map<string, char> stopWords) {
     cout << "Generating lexicon..." << endl;
     int wordID = 1;
 
