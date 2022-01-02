@@ -7,9 +7,6 @@
 
 using namespace std;
 
-#define STOPWORDS_FILENAME  "./data/stop_words.csv"
-#define METADATA_FILENAME   "./data/metadata.csv"
-
 int main() {
   cout << "Hashmap-uh!" << endl;
 
@@ -21,4 +18,9 @@ int main() {
   unordered_map<string, Article> metadata;
   populateMetadata(METADATA_FILENAME, metadata);
 
+  InvertedIndex invertedIndex;
+  populateInvertedIndex(invertedIndex, metadata);
+  invertedIndex.print();
+
+  return 0;
 }
