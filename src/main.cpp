@@ -1,9 +1,8 @@
 #include <iostream>
 #include <unordered_map>
-
-#include "../include/csv.h"
-#include "../include/trie.h"
-#include "../include/utils.h"
+#include <csv.h>
+#include <trie.h>
+#include <utils.h>
 
 using namespace std;
 

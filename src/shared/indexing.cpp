@@ -1,5 +1,5 @@
-#include "../include/indexing.h"
 
+#include <HashTable.h>
 #include <fstream>
 #include <unordered_map>
 
