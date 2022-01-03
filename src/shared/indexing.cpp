@@ -3,76 +3,87 @@
 #include <fstream>
 #include <unordered_map>
 #include <indexing.h>
+#include <paths.h>
 
-#include "../include/csv.h"
-#include "../include/utils.h"
+#include <csv.h>
+#include <utils.h>
+
 using namespace std;
 
 void generateLexicon(const string &metadataFilename,
-                     unordered_map<string, int> &lexiconMap,
-                     unordered_map<string, char> &stopWords) {
-    cout << "Generating lexicon..." << endl;
-    int wordID = 1;
+  unordered_map<string, uint32_t> &lexiconMap,
+  unordered_map<string, char> &stopWords) {
 
-    // read each file line by line
-    // for each word in line
-    //   if word is not in lexicon and is not a stopword
-    //     add word to lexicon
-    //   else
-    //     increment the index of the word in the lexicon
+  cout << "Generating lexicon..." << endl;
+  uint32_t wordId = 1;
 
-    io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>>
-        in(metadataFilename.c_str());
+  // read each file line by line
+  // for each word in line
+  //   if word is not in lexicon and is not a stopword
+  //     add word to lexicon
+  //   else
+  //     increment the index of the word in the lexicon
 
-    in.read_header(io::ignore_extra_column, "filename");
+  io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(metadataFilename.c_str());
 
-    string filename;
-    int iterations = 0;
-    while (in.read_row(filename)) {
-        if (iterations > 5) break;
-        iterations++;
-        string inputFile = "data/articles/";
+  in.read_header(io::ignore_extra_column, "filename");
 
-        // main loop
-        inputFile += filename;
+  int iterations = 0;
 
-        ifstream file;
-        file.open(inputFile);
+  string filename;
+  cout << "Reading metadata" << endl;
+  while (in.read_row(filename)) {
+    if (iterations > 100000) break;
+    iterations++;
 
-        if (!file.is_open()) {
-            cout << "input file cannot be opened" << endl;
-            return;
-        }
-        string originalWord;
-        while (file >> originalWord) {
-            string stemmedWord;
-            stemWord(originalWord, stemmedWord);
+    // main loop
+    string inputFile = CLEANED_ARTICLES_DIR + filename;
 
-            if (!stopWords[stemmedWord])
-                if (!lexiconMap[stemmedWord])
-                    lexiconMap[stemmedWord] = wordID++;
-        }
+    ifstream file;
+    file.open(inputFile);
 
-        file.close();
+    if (!file.is_open()) {
+      cout << "ERROR: Input file cannot be opened" << endl;
+      return;
     }
 
-    ofstream output;
-    string lexicon_file = "data/indexing/lexicon.csv";
-    output.open(lexicon_file);
-    if (!output.is_open()) {
-        cout << "output file cannot be opened" << endl;
-        return;
+    string originalWord;
+    string stemmedWord;
+
+    // cout << "Filename: " << filename << endl;
+    while (file >> originalWord) {
+      stemWord(originalWord, stemmedWord);
+
+      if (!stopWords[stemmedWord])
+        if (!lexiconMap[stemmedWord])
+          lexiconMap[stemmedWord] = wordId++;
     }
 
-    unordered_map<string, int>::iterator it;
-    for (it = lexiconMap.begin(); it != lexiconMap.end(); it++) {
-        // cout << it->first << ", " << it->second << endl;
-        output << it->first << ", " << it->second << "\n";
-    }
+    file.close();
+  }
+  // Skipping the writing part 
+  return;
 
-    // [fileId, frequency], wordID
+  ofstream output;
+  string lexiconFilename = INDEXING_DIR + "lexicon.csv";
 
-    // wordID, [fileId, frequency]
+  cout << "Writing to " << lexiconFilename << endl;
 
-    output.close();
+  output.open(lexiconFilename);
+  if (!output.is_open()) {
+    cout << "ERROR: Output file cannot be opened" << endl;
+    return;
+  }
+
+  output << "word,wordId" << endl;
+  for (auto &it : lexiconMap) {
+    // cout << it->first << ", " << it->second << endl;
+    output << it.first << "," << it.second << "\n";
+  }
+
+  // [fileId, frequency], wordId
+
+  // wordId, [fileId, frequency]
+
+  output.close();
 }

@@ -17,8 +17,8 @@ void populateStopWords(const std::string &filename,
   }
 }
 
-void populateMetadata(const string &filename, unordered_map<string, Article> &metadata) {
-  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(filename.c_str());
+void populateMetadata(const string &in_filename, unordered_map<string, Article> &metadata) {
+  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(in_filename.c_str());
   in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
   string id, title, filename, updated_at;
