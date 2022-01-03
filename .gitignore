@@ -36,3 +36,8 @@ data/articles*
 *.out
 *.app
 bin/*
+
+
+dump/
+data/indexing
+data/inverted-indices
