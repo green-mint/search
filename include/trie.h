@@ -22,8 +22,9 @@ class Trie {
     void insert(string word);
     bool search(string word);
     bool deleteWord(string word);
-    bool startsWith(string prefix);
+    bool isLeafNode(TrieNode* node);
+    void prefixSearchHelper(TrieNode* root, string prefix);
+    void prefixSearch(TrieNode* root, string prefix);
 };
-
 
 #endif
