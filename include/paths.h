@@ -1,8 +1,12 @@
 #pragma once 
 
-#define DATA_DIR "./data"
+#include <iostream>
 
-#define STOPWORDS_FILENAME          "./data/stop_words.csv"
-#define METADATA_FILENAME           "./data/metadata.csv"
-#define CLEANED_ARTICLES_DIR        "./data/articles/"
-#define RAW_ARTICLES_DIR            "./data/articles-raw/"
+const std::string DATA_DIR = "./data";
+
+const std::string STOPWORDS_FILENAME = DATA_DIR + "/stop_words.csv";
+const std::string METADATA_FILENAME = DATA_DIR + "/metadata.csv";
+const std::string CLEANED_ARTICLES_DIR = DATA_DIR + "/articles/";
+const std::string RAW_ARTICLES_DIR = DATA_DIR + "/articles-raw/";
+
+const std::string INDEXING_DIR = DATA_DIR + "/indexing/";

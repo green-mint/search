@@ -1,19 +1,21 @@
 
 #include <invertedindex.h>
 
-void InvertedIndex::addWord(const string &word, string &fileId, size_t position) {
-  if (index.find(word) == index.end()) {
-    // No such word in the index
-    FilesMap wordMap;
-    index[word] = wordMap;
-  }
+void InvertedIndex::addWord(const uint32_t word, string &fileId, size_t position) {
+  // if (index.find(word) == index.end()) {
+  //   // No such word in the index
+  //   FilesMap wordMap;
+  //   index[word] = wordMap;
+  // }
   // Word exists in the index
   FilesMap &wordMap = index[word];
   if (wordMap.files.find(fileId) == wordMap.files.end()) {
     // No such file in the word map
-    FilesMap::WordDetail fileMap;
-    fileMap.frequency = 1;
-    wordMap.files[fileId] = fileMap;
+    // FilesMap::WordDetail fileMap;
+    // fileMap.frequency = 1;
+    // fileMap.positions.push_back(position);
+    wordMap.files[fileId].frequency = 1;
+    wordMap.files[fileId].positions.push_back(position);
   }
   else {
     // File exists in the word map
@@ -23,11 +25,11 @@ void InvertedIndex::addWord(const string &word, string &fileId, size_t position)
   }
 }
 
-InvertedIndex::FilesMap &InvertedIndex::searchWord(const string &word) {
+InvertedIndex::FilesMap &InvertedIndex::searchWord(const uint32_t word) {
   return index[word];
 }
 
-void InvertedIndex::deleteWord(const string &word) {
+void InvertedIndex::deleteWord(const uint32_t word) {
   index.erase(word);
 }
 
@@ -41,7 +43,7 @@ void InvertedIndex::print() {
   }
 }
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, Article> &metadata) {
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, Article> &metadata) {
   size_t filesread = 0;
   for (auto it : metadata) {
     string fileId = it.first;
@@ -59,12 +61,53 @@ void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, A
       for (segment = strtok((char *) line.c_str(), " "); segment != NULL; segment = strtok(NULL, " ")) {
         originalWord = string(segment);
         stemWord(originalWord, stemmedWord);
-        invertedIndex.addWord(stemmedWord, fileId, position);
+
+        if (lexicon.find(stemmedWord) == lexicon.end()) {
+          // Word not found in the lexicon
+          continue;
+        }
+
+        uint32_t wordId = lexicon[stemmedWord];
+        invertedIndex.addWord(wordId, fileId, position);
         ++position;
       }
 
       // cout << "Processed " << article.filename << endl;
     }
-    if (++filesread == 20) break;
+    if (++filesread == 100000) break;
   }
+}
+
+
+void InvertedIndex::writeToFile(const string &filename) {
+  ofstream file(filename);
+  file << "wordId" << "," << "fileId" << "," << "frequency" << "," << "positions" << endl;
+  string wordId, fileId, frequency, positions;
+  positions.reserve(256);
+
+  for (auto &it0 : index) {
+    for (auto &it1 : it0.second.files) {
+      // wordId = to_string( it0.first;
+      // fileId = it1.first;
+      // frequency = it1.second.frequency;
+
+      wordId = to_string(it0.first);
+      fileId = it1.first;
+      frequency = to_string(it1.second.frequency);
+
+      positions = "\"";
+      for (auto &it2 : it1.second.positions) {
+        positions += to_string(it2) + ",";
+      }
+      positions += "\"";
+
+      file << wordId << "," << fileId << "," << frequency << "," << positions << endl;
+      // cout << it0.first << ": file: " << it1.first << " frequency: " << it1.second.frequency << " positions:[";
+      // for (auto &it2 : it1.second.positions) {
+      //   cout << it2 << ",";
+      // }
+      // cout << "]" << endl;
+    }
+  }
+  file.close();
 }

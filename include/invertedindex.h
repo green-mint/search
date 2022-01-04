@@ -11,10 +11,11 @@ class InvertedIndex {
 public:
   struct FilesMap;
 
-  void addWord(const string &word, string &fileId, size_t position);
-  FilesMap &searchWord(const string &word);
-  void deleteWord(const string &word);
+  void addWord(const uint32_t word, string &fileId, size_t position);
+  FilesMap &searchWord(const uint32_t word);
+  void deleteWord(const uint32_t word);
   void print();
+  void writeToFile(const string &filename);
 
 public:
   struct FilesMap {
@@ -26,9 +27,10 @@ public:
     unordered_map<string, WordDetail> files;
   };
 
+  // TODO: Move this down
+  unordered_map<uint32_t, FilesMap> index;
 private:
-  // word, FilesMap
-  unordered_map<string, FilesMap> index;
+  // wordId, FilesMap
 };
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, Article> &metadata);
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, Article> &metadata);
