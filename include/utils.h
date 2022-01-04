@@ -8,6 +8,7 @@
 #include <olestem/stemming/english_stem.h>
 #include <paths.h>
 #include <linkedlist.h>
+#include <trie.h>
 
 using namespace std;
 using namespace boost::gregorian;
@@ -31,6 +32,8 @@ struct Article {
 void toISODate(string &date);
 
 void stemWord(const string &input, string &output);
+void populateTrie(Trie &trie, const unordered_map<string, Article> &metadata);
+
 
 void loadLexicon(unordered_map<string, int> &lexicon);
 
