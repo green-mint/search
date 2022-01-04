@@ -8,6 +8,7 @@
 #include <boost/filesystem.hpp>
 #include <olestem/stemming/english_stem.h>
 #include <paths.h>
+#include <trie.h>
 
 using namespace std;
 using namespace boost::gregorian;
@@ -32,6 +33,8 @@ struct Article {
 
 void populateStopWords(const string &filename, unordered_map<string, char> &stopWords);
 void populateMetadata(const string &filename, unordered_map<string, Article> &metadata);
+void populateTrie(Trie &trie, const unordered_map<string, Article> &metadata);
+
 
 void toISODate(std::string &date);
 

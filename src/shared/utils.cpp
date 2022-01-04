@@ -1,5 +1,7 @@
 #include <csv.h>
 #include <string.h>
+#include <stringutils.h>
+#include <trie.h>
 #include <utils.h>
 
 #include <fstream>
@@ -51,4 +53,18 @@ void stemWord(const string &input, string &output) {
     wstring str = converter.from_bytes(input);
     stemmer(str);
     output = converter.to_bytes(str);
+}
+
+void populateTrie(Trie &trie, const unordered_map<string, Article> &metadata) {
+    for (auto &article : metadata) {
+        string title = article.second.title;
+        string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
+        if (checkTitle(lowerSpaceRemovedTitle)) {
+            // cout << title << endl;
+            // cout << lowerSpaceRemovedTitle << endl;
+            trie.insert(lowerSpaceRemovedTitle);
+        }
+    }
+
+    cout << "Trie populated" << endl;
 }
