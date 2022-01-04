@@ -8,7 +8,7 @@ SRC_SHARED_DIR=./src/shared
 OBJ_DIR=./obj
 BIN_DIR=./bin
 
-OBJ_FILES=$(OBJ_DIR)/trie.o $(OBJ_DIR)/utils.o $(OBJ_DIR)/indexing.o $(OBJ_DIR)/invertedindex.o
+OBJ_FILES=$(OBJ_DIR)/trie.o $(OBJ_DIR)/utils.o $(OBJ_DIR)/indexing.o $(OBJ_DIR)/invertedindex.o $(OBJ_DIR)/stringutils.o 
 
 MAIN_BIN=main
 

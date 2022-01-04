@@ -43,11 +43,11 @@ void InvertedIndex::print() {
   }
 }
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, Article> &metadata) {
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, ArticleMeta> &metadata) {
   size_t filesread = 0;
   for (auto it : metadata) {
     string fileId = it.first;
-    Article &article = it.second;
+    ArticleMeta &article = it.second;
 
     ifstream file(CLEANED_ARTICLES_DIR + article.filename);
     string line;

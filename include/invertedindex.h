@@ -33,4 +33,4 @@ private:
   // wordId, FilesMap
 };
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, Article> &metadata);
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, ArticleMeta> &metadata);

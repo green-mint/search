@@ -10,4 +10,4 @@ void generateLexicon(const string &filename, unordered_map<string, uint32_t> &le
 
 void populateStopWords(const string &filename, unordered_map<string, char> &stopWords);
 
-void populateMetadata(const string &filename, unordered_map<string, Article> &metadata);
+void populateMetadata(const string &filename, unordered_map<string, ArticleMeta> &metadata);

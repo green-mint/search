@@ -3,7 +3,6 @@
 #include <stringutils.h>
 #include <trie.h>
 #include <utils.h>
-
 #include <fstream>
 
 static wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
@@ -30,7 +29,7 @@ void stemWord(const string &input, string &output) {
 }
 
 
-void loadLexicon(unordered_map<string, int> &lexicon) {
+void loadLexicon(unordered_map<string, uint32_t> &lexiconMap) {
   const string filename = LEXICON_FILENAME;
 
   io::CSVReader<2> in(filename);
@@ -40,7 +39,7 @@ void loadLexicon(unordered_map<string, int> &lexicon) {
   uint32_t wordId;
 
   while (in.read_row(word, wordId)) {
-    lexicon[word] = wordId;
+    lexiconMap[word] = wordId;
   }
 }
 
@@ -52,7 +51,7 @@ void splitString(const string &input, char delimiter, DoublyLinkedList<string> &
   }
 }
 
-void populateTrie(Trie &trie, const unordered_map<string, Article> &metadata) {
+void populateTrie(Trie &trie, const unordered_map<string, ArticleMeta> &metadata) {
   for (auto &article : metadata) {
     string title = article.second.title;
     string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
@@ -64,4 +63,27 @@ void populateTrie(Trie &trie, const unordered_map<string, Article> &metadata) {
   }
 
   cout << "Trie populated" << endl;
+}
+
+
+void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, unordered_map<string, uint32_t> &lexiconMap) {
+  DoublyLinkedList<string> queryWords;
+  splitString(query, ' ', queryWords);
+
+  DoublyLinkedList<string> stemmedQuery;
+  for (auto head = queryWords.get_head(); head != nullptr; head = head->next) {
+    string word = head->data;
+    string stemmedWord;
+    stemWord(word, stemmedWord);
+
+    stemmedQuery.push_back(stemmedWord);
+  }
+
+  for (auto head = stemmedQuery.get_head(); head != nullptr; head = head->next) {
+    if (lexiconMap[head->data]) {
+      fileIds.push_back(lexiconMap[head->data]);
+      words.push_back(head->data);
+    }
+  }
+
 }

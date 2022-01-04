@@ -26,7 +26,7 @@ int main() {
   cout << "Sizeof Stopwords " << stopWords.size() << endl;
 
   // Loading the metadata
-  unordered_map<string, Article> metadata;
+  unordered_map<string, ArticleMeta> metadata;
   populateMetadata(METADATA_FILENAME, metadata);
 
   cout << "Sizeof metadata " << metadata.size() << endl;
