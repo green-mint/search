@@ -3,17 +3,23 @@
 template <typename T>
 class DoublyLinkedList {
 public:
+  // Node struct 
   struct Node;
+  // constructor and destructor
   DoublyLinkedList();
   ~DoublyLinkedList();
 
+  // push and pop like stack and queue
   void push_front(const T &data);
   void push_back(const T &data);
   T pop_back();
   T pop_front();
+  // print and get size
   void print();
   size_t size();
+  // head for iteration
   Node *get_head();
+  // check if value exists
   bool find(const T &data);
 
   struct Node {
@@ -31,6 +37,7 @@ private:
 
 
 template <typename T>
+// constructor
 DoublyLinkedList<T>::DoublyLinkedList() {
   head = nullptr;
   tail = nullptr;
@@ -38,6 +45,7 @@ DoublyLinkedList<T>::DoublyLinkedList() {
   length = 0;
 }
 
+// destructor to free memory
 template <typename T>
 DoublyLinkedList<T>::~DoublyLinkedList() {
   Node *curr = head;
@@ -48,6 +56,7 @@ DoublyLinkedList<T>::~DoublyLinkedList() {
   }
 }
 
+// find value
 template <typename T>
 bool DoublyLinkedList<T>::find(const T &data) {
   Node *curr = head;
@@ -59,7 +68,7 @@ bool DoublyLinkedList<T>::find(const T &data) {
   return false;
 }
 
-
+// add on top like stack
 template <typename T>
 void DoublyLinkedList<T>::push_front(const T &data) {
   Node *newNode = new Node;
@@ -75,7 +84,7 @@ void DoublyLinkedList<T>::push_front(const T &data) {
   }
   length++;
 }
-
+// add on back like queue
 template <typename T>
 void DoublyLinkedList<T>::push_back(const T &data) {
   Node *newNode = new Node;
@@ -92,7 +101,7 @@ void DoublyLinkedList<T>::push_back(const T &data) {
   length++;
 }
 
-
+// remove from back like queue
 template <typename T>
 T DoublyLinkedList<T>::pop_back() {
   if (pTail == nullptr) {
@@ -111,6 +120,7 @@ T DoublyLinkedList<T>::pop_back() {
   return temp2;
 }
 
+// remove from front like stack
 template <typename T>
 T DoublyLinkedList<T>::pop_front() {
   if (head == nullptr) {
@@ -132,6 +142,7 @@ T DoublyLinkedList<T>::pop_front() {
 
 
 template <typename T>
+// print entire list
 void DoublyLinkedList<T>::print() {
   Node *curr = head;
   while (curr != nullptr) {
@@ -142,10 +153,12 @@ void DoublyLinkedList<T>::print() {
 }
 
 template <typename T>
+// return length
 size_t DoublyLinkedList<T>::size() {
   return length;
 }
 
+// get head node pointer
 template <typename T>
 typename DoublyLinkedList<T>::Node *DoublyLinkedList<T>::get_head() {
   return head;

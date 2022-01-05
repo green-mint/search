@@ -11,7 +11,7 @@ class Set {
 public:
   int length = 0;
   int size = 0;
-
+  // constructor default
   HashMap<T, bool> *hashmap = nullptr;
   Set(int _size = 100) {
     hashmap = new HashMap<T, bool>(_size);
@@ -19,6 +19,7 @@ public:
     length = 0;
   }
 
+  // constructor
   Set(const Set<T> &other) {
     hashmap = new HashMap<T, bool>(other.size);
     size = other.size;
@@ -28,6 +29,7 @@ public:
     }
   }
 
+  //copy a lsit
   Set(DoublyLinkedList<T> &list) {
     hashmap = new HashMap<T, bool>(list.size());
     size = list.size();
@@ -37,12 +39,13 @@ public:
     }
   }
 
+  // deletion
   void clear() {
     delete hashmap;
     hashmap = new HashMap<T, bool>(size);
     length = 0;
   }
-
+  // insert into set
   void insert(const T &value) {
     if (hashmap->find(value))
       return;
@@ -50,25 +53,29 @@ public:
     hashmap->insert(value, true);
     ++length;
   }
-
+  // check if value is in hashmap
   bool find(const T &value) {
     return hashmap->find(value);
   }
 
+// get back value
   T &get(const T &value) {
     return hashmap->get(value);
   }
 
+  // delete entry
   void remove(const T &value) {
     hashmap->remove(value);
     length--;
   }
 
+  // get pointer to head
   Node<T, bool> **getHead() {
     return hashmap->getHead();
   }
 
   void print() {
+    // traverse and print entire set
     Node<T, bool> **head = hashmap->getHead();
     int count = hashmap->numNodes;
 
@@ -98,17 +105,21 @@ public:
   }
 
   ~Set() {
+    // destructor
     delete hashmap;
   }
 
   static void intersection(Set<T> &setA, Set<T> &setB, Set<T> &result) {
 
+    // take two sets and find intersectiosn, store in another set
     Set<T> &primary = ((setA.length > setB.length) ? setA : setB);
     Set<T> &secondary = ((primary == setA) ? setB : setA);
 
+    // primary is iterated
     Node<T, bool> **nodes = primary.getHead();
 
     T key;
+    // check if value exist in second, if so store in result set
     for (int i = 0, len = primary.length; i < len; ++i) {
       if (nodes[i] != nullptr) {
         key = nodes[i]->key;
