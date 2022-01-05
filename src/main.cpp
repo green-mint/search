@@ -10,7 +10,8 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
   cout << "Hashmap-uh!" << endl;
 
   cout << "Loading lexicon..." << endl;
@@ -34,4 +35,17 @@ int main() {
   getFileIdFromQuery(userQuery, wordFileIds, words, lexiconMap);
 
   fetchResults(words, wordFileIds, metadata);
+
+  // string suggestionsFor;
+  // Trie trie;
+  // populateTrie(trie);
+  
+  // while(1){
+  //   cout << "Suggestions for: ";
+  //   getline(cin, suggestionsFor);
+  //   trie.prefixSearch(trie.root, suggestionsFor);
+
+  // }
+
+  return 0;
 }
