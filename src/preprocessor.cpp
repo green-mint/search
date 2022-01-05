@@ -5,17 +5,20 @@
 #include <paths.h>
 #include <csv.h>
 
+// lexicon loaded from csv
 void loadLexicon(const string &filename, HashMap<string, uint32_t> &lexiconMap) {
   io::CSVReader<2, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> > in(filename);
   in.read_header(io::ignore_extra_column, "word", "wordId");
 
   string word;
   uint32_t wordId;
+  // iterate each tuple
   while (in.read_row(word, wordId)) {
     lexiconMap[word] = wordId;
   }
 }
 
+// test main
 int main() {
   cout << "Hashmap-uh!" << endl;
 

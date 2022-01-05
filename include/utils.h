@@ -28,6 +28,7 @@ struct ArticleMeta {
 
   ArticleMeta() { }
 
+  // constructor
   ArticleMeta(uint32_t id, string title, string filename, date updated_at) {
     this->id = id;
     this->title = title;
@@ -36,21 +37,29 @@ struct ArticleMeta {
   };
 };
 
+// convert to date format
 void toISODate(string &date);
+// generate metadatqa
 void populateMetadata(const string &filename, HashMap<uint32_t, ArticleMeta> &metadata);
 
+// stemming of a word
 void stemWord(const string &input, string &output);
 
+// fill trie with data
 void populateTrie(Trie &trie);
 
+// load lexicon csv to hashmap
 void loadLexicon(HashMap<string, uint32_t> &lexiconMap);
 
+// load metadata csv to hashmap
 void loadMetadata(HashMap<uint32_t, ArticleMeta> &metadata);
 
+// file id of words 
 void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap);
 
-
+//get final resutls
 void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata);
 
+// check if query is supposed to feth title of any article
 bool compareTitleWithQuery(const string &articleTitle, DoublyLinkedList<string> words, Set<string> *articleWordsSet, Set<string> *queryWordsSet, Set<string> *intersectionSet);
 
