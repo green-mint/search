@@ -3,7 +3,11 @@
 #include <iostream>
 
 // Change this to ../data/ when running from Makefile-tools in VSCode
+#ifdef MAKEFILETOOLS_
 const std::string DATA_DIR = "../data/";
+#else 
+const std::string DATA_DIR = "../data/";
+#endif
 
 const std::string CLEANED_ARTICLES_DIR = DATA_DIR + "articles/";
 const std::string RAW_ARTICLES_DIR = DATA_DIR + "articles-raw/";

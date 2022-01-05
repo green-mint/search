@@ -9,11 +9,12 @@ public:
 
   void push_front(const T &data);
   void push_back(const T &data);
-  void pop_back();
-  void pop_front();
+  T pop_back();
+  T pop_front();
   void print();
   size_t size();
   Node *get_head();
+  bool find(const T &data);
 
   struct Node {
     T data;
@@ -46,6 +47,18 @@ DoublyLinkedList<T>::~DoublyLinkedList() {
     delete temp;
   }
 }
+
+template <typename T>
+bool DoublyLinkedList<T>::find(const T &data) {
+  Node *curr = head;
+  while (curr != nullptr) {
+    if (curr->data == data)
+      return true;
+    curr = curr->next;
+  }
+  return false;
+}
+
 
 template <typename T>
 void DoublyLinkedList<T>::push_front(const T &data) {
@@ -81,33 +94,40 @@ void DoublyLinkedList<T>::push_back(const T &data) {
 
 
 template <typename T>
-void DoublyLinkedList<T>::pop_back() {
+T DoublyLinkedList<T>::pop_back() {
   if (pTail == nullptr) {
-    return;
+    return T();
   }
+
   Node *temp = pTail;
+  T temp2 = pTail->data;
   pTail = pTail->prev;
   if (pTail != nullptr) {
     pTail->next = nullptr;
   }
-  delete temp;
 
   length--;
+  delete temp;
+  return temp2;
 }
 
 template <typename T>
-void DoublyLinkedList<T>::pop_front() {
+T DoublyLinkedList<T>::pop_front() {
   if (head == nullptr) {
-    return;
+    return T();
   }
+
   Node *temp = head;
+  T temp2 = head->data;
+
   head = head->next;
   if (head != nullptr) {
     head->prev = nullptr;
   }
-  delete temp;
-
+  // delete temp;
   length--;
+  delete temp;
+  return temp2;
 }
 
 

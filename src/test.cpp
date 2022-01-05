@@ -1,5 +1,7 @@
 #include <iostream> 
 #include <hashmap.h>
+#include <linkedlist.h>
+#include <set.h>
 
 using namespace std;
 
@@ -11,20 +13,19 @@ struct Article {
 };
 
 int main() {
-  HashMap<string, Article> hm(10);
 
-  hm.insert("hello", { "Hello" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
-  hm.insert("bish", { "bish" });
+  DoublyLinkedList<int> l;
 
-  cout << hm["bish"].name << endl;
+  l.push_back(1);
+  l.push_back(2);
+  l.push_back(3);
+  l.push_back(5);
+  l.push_back(4);
 
-  hm["bish"] = { "bish123" };
-  cout << hm["hello"].name << endl;
-  cout << hm["bish"].name << endl;
+  Set<int> s(l);
+
+  l.print();
+  s.print();
+
+
 }
