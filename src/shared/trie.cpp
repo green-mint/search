@@ -6,16 +6,22 @@
 
 using namespace std;
 
-TrieNode::TrieNode() {
+TrieNode::TrieNode()
+{
     isEndOfWord = false;
-    for (size_t i = 0; i < 26; i++) {
+
+    for (size_t i = 0; i < NUMBER_OF_ALPHABETS; i++)
+    {
         children[i] = NULL;
     }
 }
 
-TrieNode::~TrieNode() {
-    for (size_t i = 0; i < 26; i++) {
-        if (children[i] != NULL) {
+TrieNode::~TrieNode()
+{
+    for (size_t i = 0; i < NUMBER_OF_ALPHABETS; i++)
+    {
+        if (children[i] != NULL)
+        {
             delete children[i];
         }
     }
@@ -24,37 +30,53 @@ Trie::Trie() { root = new TrieNode(); }
 
 Trie::~Trie() { delete root; }
 
-void Trie::insert(string word) {
+void Trie::insert(string word,int id)
+{
     TrieNode *curr = root;
-    for (size_t i = 0; i < word.length(); i++) {
-        int index = word[i] - 'a';
-        if (curr->children[index] == NULL) {
+    for (size_t i = 0; i < word.length(); i++)
+    {
+        int index = word[i] - ' ';
+        if (curr->children[index] == NULL)
+        {
             curr->children[index] = new TrieNode();
         }
         curr = curr->children[index];
     }
     curr->isEndOfWord = true;
+    curr->id = id;
 }
 
-bool Trie::search(string word) {
+int Trie::search(string word)
+{
     TrieNode *curr = root;
-    for (size_t i = 0; i < word.length(); i++) {
-        int index = word[i] - 'a';
-        if (curr->children[index] == NULL) {
-            return false;
+    for (size_t i = 0; i < word.length(); i++)
+    {
+        int index = word[i] - ' ';
+        if (curr->children[index] == NULL)
+        {   
+
+            return -1;
         }
         curr = curr->children[index];
     }
-    return curr->isEndOfWord;
+    if(curr->isEndOfWord)
+    return curr->id;
+    else 
+    return -1;
 }
 
-bool Trie::deleteWord(string word) {
+bool Trie::deleteWord(string word)
+{
     TrieNode *currNode = root;
-    for (size_t i = 0; i < word.length(); i++) {
-        int index = word[i] - 'a';
-        if (currNode->children[index] != NULL) {
+    for (size_t i = 0; i < word.length(); i++)
+    {
+        int index = word[i] - ' ';
+        if (currNode->children[index] != NULL)
+        {
             currNode = currNode->children[index];
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -63,45 +85,59 @@ bool Trie::deleteWord(string word) {
     return true;
 }
 
-bool Trie::isLeafNode(TrieNode *node) {
-    for (size_t i = 0; i < 26; i++) {
-        if (node->children[i] != NULL) {
+bool Trie::isLeafNode(TrieNode *node)
+{
+    for (size_t i = 0; i < NUMBER_OF_ALPHABETS; i++)
+    {
+        if (node->children[i] != NULL)
+        {
             return false;
         }
     }
     return true;
 }
 
-void Trie::prefixSearchHelper(TrieNode *root, string prefix) {
-    if (root->isEndOfWord) {
+void Trie::prefixSearchHelper(TrieNode *root, string prefix)
+{
+    if (root->isEndOfWord)
+    {
         cout << prefix << endl;
     }
 
-    if (isLeafNode(root)) return;
+    if (isLeafNode(root))
+        return;
 
-    for (int i = 0; i < 26; i++) {
-        if (root->children[i]) {
-            prefixSearchHelper(root->children[i], prefix + (char)(i + 'a'));
+    for (int i = 0; i < NUMBER_OF_ALPHABETS; i++)
+    {
+        if (root->children[i])
+        {
+            prefixSearchHelper(root->children[i], prefix + (char)(i + ' '));
         }
     }
 }
 
-void Trie::prefixSearch(TrieNode *root, const string prefix) {
+void Trie::prefixSearch(TrieNode *root, const string prefix)
+{
     {
         TrieNode *currentNode = root;
 
-        for (u_int32_t i = 0; i < prefix.length(); i++) {
-            int index = prefix[i] - 'a';
+        for (u_int32_t i = 0; i < prefix.length(); i++)
+        {
+            int index = prefix[i] - ' ';
 
-            if (!currentNode->children[index]) return;
+            if (!currentNode->children[index])
+                return;
 
             currentNode = currentNode->children[index];
         }
 
-        if (currentNode->isEndOfWord && isLeafNode(currentNode)) {
+        if (currentNode->isEndOfWord && isLeafNode(currentNode))
+        {
             cout << prefix << endl;
             return;
-        } else if (!isLeafNode(currentNode)) {
+        }
+        else if (!isLeafNode(currentNode))
+        {
             prefixSearchHelper(currentNode, prefix);
             return;
         }
