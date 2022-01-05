@@ -45,20 +45,22 @@ void loadLexicon(HashMap<string, uint32_t> &lexiconMap) {
   }
 }
 
-// void populateTrie(Trie &trie, const HashMap<uint32_t, ArticleMeta> &metadata) {
-//   for (auto &article : metadata) {
-//     string title = article.second.title;
-//     string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
-//     if (checkTitle(lowerSpaceRemovedTitle)) {
-//       // cout << title << endl;
-//       // cout << lowerSpaceRemovedTitle << endl;
-//       trie.insert(lowerSpaceRemovedTitle);
-//     }
-//   }
+void populateTrie(Trie &trie)
+{
+ 
 
-//   cout << "Trie populated" << endl;
-// }
+  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(METADATA_FILENAME.c_str());
+  in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
+  u_int32_t id;
+  string title, filename, updated_at;
+  while (in.read_row(id, title, filename, updated_at))
+  {
+    trie.insert(title,id);
+  }
+
+  cout << "Trie populated" << endl;
+}
 
 void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap) {
   DoublyLinkedList<string> queryWords;

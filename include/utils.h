@@ -41,7 +41,7 @@ void populateMetadata(const string &filename, HashMap<uint32_t, ArticleMeta> &me
 
 void stemWord(const string &input, string &output);
 
-void populateTrie(Trie &trie, const HashMap<uint32_t, ArticleMeta> &metadata);
+void populateTrie(Trie &trie);
 
 void loadLexicon(HashMap<string, uint32_t> &lexiconMap);
 
