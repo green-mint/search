@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// testing file
 struct Article {
   string name;
   Article(string _name = "") {

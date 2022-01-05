@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// iterate and convert alphabets to lower
 string &toLower(string &text) {
   for (int i = 0; text[i]; i++) {
     text[i] = tolower(text[i]);
@@ -12,6 +13,7 @@ string &toLower(string &text) {
   return text;
 }
 
+// remove space and lower using regex
 string &lowerAndRemoveSpace(string &text) {
   std::regex r("\\s+");
   text = std::regex_replace(text, r, "");
@@ -22,6 +24,7 @@ string &lowerAndRemoveSpace(string &text) {
   return text;
 }
 
+// see if lower case title
 bool checkTitle(string title)
 {
   bool isOkay = true;
@@ -38,6 +41,7 @@ bool checkTitle(string title)
   return isOkay;
 }
 
+// split according to delimiter
 void splitString(const string &input, char delimiter, DoublyLinkedList<string> &output) {
   stringstream ss(input);
   string item;
