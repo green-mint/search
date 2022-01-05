@@ -7,7 +7,10 @@
 #include <olestem/stemming/english_stem.h>
 #include <paths.h>
 #include <linkedlist.h>
+#include <hashmap.h>
 #include <trie.h>
+
+#define LEXICON_SIZE 1300000
 
 using namespace std;
 using namespace boost::gregorian;
@@ -51,7 +54,7 @@ void stemWord(const string &input, string &output);
 
 void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata);
 
-void loadLexicon(unordered_map<string, uint32_t> &lexiconMap);
+void loadLexicon(HashMap<string, uint32_t> &lexiconMap);
 
 void loadMetadata(unordered_map<uint32_t, ArticleMeta> &metadata);
 

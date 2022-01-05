@@ -30,7 +30,7 @@ void stemWord(const string &input, string &output) {
 }
 
 
-void loadLexicon(unordered_map<string, uint32_t> &lexiconMap) {
+void loadLexicon(HashMap<string, uint32_t> &lexiconMap) {
   const string filename = LEXICON_FILENAME;
 
   io::CSVReader<2> in(filename);
@@ -40,7 +40,8 @@ void loadLexicon(unordered_map<string, uint32_t> &lexiconMap) {
   uint32_t wordId;
 
   while (in.read_row(word, wordId)) {
-    lexiconMap[word] = wordId;
+    // lexiconMap[word] = wordId;
+    lexiconMap.insert(word, wordId);
   }
 }
 

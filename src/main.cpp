@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <hashmap.h>
 #include <csv.h>
 #include <trie.h>
 #include <utils.h>
@@ -13,50 +14,56 @@ int main() {
   cout << "Hashmap-uh!" << endl;
 
   cout << "Loading lexicon..." << endl;
-  unordered_map<string, uint32_t> lexiconMap;
+  HashMap<string, uint32_t> lexiconMap(LEXICON_SIZE);
   loadLexicon(lexiconMap);
 
-  cout << "Loading metadata..." << endl;
-  unordered_map<uint32_t, ArticleMeta> metadata;
-  loadMetadata(metadata);
+  cout << lexiconMap["short"] << endl;
+  cout << lexiconMap["war"] << endl;
+  cout << lexiconMap["descript"] << endl;
 
-  string userQuery;
-  userQuery.reserve(128);
-  cout << "Enter a query: ";
-  getline(cin, userQuery);
+  // cout << "Loading metadata..." << endl;
+  // unordered_map<uint32_t, ArticleMeta> metadata;
+  // loadMetadata(metadata);
 
-  DoublyLinkedList<uint32_t> fileIds;
-  DoublyLinkedList<string> words;
-  getFileIdFromQuery(userQuery, fileIds, words, lexiconMap);
+  // string userQuery;
+  // userQuery.reserve(128);
+  // cout << "Enter a query: ";
+  // getline(cin, userQuery);
 
-  words.print();
-  fileIds.print();
+  // DoublyLinkedList<uint32_t> fileIds;
+  // DoublyLinkedList<string> words;
+  // getFileIdFromQuery(userQuery, fileIds, words, lexiconMap);
 
-  // blue balls america mouth
-  // blue -> wordId
-  // balls -> wordId
-  // america -> wordId
-  // mouth -> wordId
+  // words.print();
+  // fileIds.print();
 
-  for (auto head = fileIds.get_head(); head != nullptr; head = head->next) {
-    string filename = INVERTED_INDICES_DIR + to_string(head->data) + ".csv";
-    ifstream file(filename);
+  // // blue balls america mouth
+  // // blue -> wordId
+  // // balls -> wordId
+  // // america -> wordId
+  // // mouth -> wordId
+  // cin.get();
 
-    cout << filename << endl << endl;
-    string line;
-    while (getline(file, line)) {
-      cout << line << endl;
+  // for (auto head = fileIds.get_head(); head != nullptr; head = head->next) {
+  //   string filename = INVERTED_INDICES_DIR + to_string(head->data) + ".csv";
+  //   ifstream file(filename);
 
-      //wordId, fileId, frequency, positions
-      // 1, 1
-      // 1, 100
-      // 1, 134
-      // 1, 113334
-      // 1, 1212121
+  //   cout << filename << endl << endl;
+  //   string line;
+  //   while (getline(file, line)) {
+  //     cout << line << endl;
 
-    }
+  //     //wordId, fileId, frequency, positions
+  //     // 1, 1
+  //     // 1, 100
+  //     // 1, 134
+  //     // 1, 113334
+  //     // 1, 1212121
 
-    cin.get();
-    cout << "=============================================" << endl;
-  }
+  //   }
+
+  //   cin.get();
+  //   cin.ignore();
+  //   cout << "=============================================" << endl;
+  // }
 }

@@ -23,10 +23,10 @@ all: $(MAIN_BIN)
 
 objs: $(OBJ_FILES)
 
-$(OBJ_DIR)/%.o: $(SRC_SHARED_DIR)/%.cpp $(INCLUDE_DIR)/*.h
+$(OBJ_DIR)/%.o: $(SRC_SHARED_DIR)/%.cpp 
 	$(CC) -o $@ $(CFLAGS) -c $<
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/*.h
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp 
 	$(CC) -o $@ $(CFLAGS) -c $<
 
 %: $(SRC_DIR)/%.cpp $(OBJ_DIR)/%.o objs 
