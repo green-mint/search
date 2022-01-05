@@ -41,3 +41,6 @@ bin/*
 dump/
 data/indexing
 data/inverted-indices
+data/barrels/
+data/barrels
+data/
