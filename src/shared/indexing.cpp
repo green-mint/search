@@ -1,7 +1,6 @@
 
-#include <HashTable.h>
 #include <fstream>
-#include <unordered_map>
+
 #include <indexing.h>
 #include <paths.h>
 
@@ -12,8 +11,8 @@
 using namespace std;
 
 void generateLexicon(const string &metadataFilename,
-  unordered_map<string, uint32_t> &lexiconMap,
-  unordered_map<string, char> &stopWords) {
+  HashMap<string, uint32_t> &lexiconMap,
+  HashMap<string, char> &stopWords) {
 
   cout << "Generating lexicon..." << endl;
   uint32_t wordId = 1;
@@ -93,7 +92,7 @@ wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 stemming::english_stem<> stemmer;
 
 void populateStopWords(const std::string &filename,
-  std::unordered_map<std::string, char> &stopWords) {
+  HashMap<string, char> &stopWords) {
   io::CSVReader<1> in(filename.c_str());
   in.read_header(io::ignore_extra_column, "words");
 
@@ -103,7 +102,7 @@ void populateStopWords(const std::string &filename,
   }
 }
 
-void populateMetadata(const string &in_filename, unordered_map<uint32_t, ArticleMeta> &metadata) {
+void populateMetadata(const string &in_filename, HashMap<uint32_t, ArticleMeta> &metadata) {
   io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(in_filename.c_str());
   in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
@@ -113,6 +112,7 @@ void populateMetadata(const string &in_filename, unordered_map<uint32_t, Article
     toISODate(updated_at);
     filename = toLower(filename);
     ArticleMeta article(id, title, filename, date_from_iso_string(updated_at));
-    metadata[id] = article;
+    // metadata[id] = article;
+    metadata.insert(id, article);
   }
 }

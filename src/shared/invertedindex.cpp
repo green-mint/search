@@ -43,7 +43,7 @@ void InvertedIndex::print() {
   }
 }
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<uint32_t, ArticleMeta> &metadata) {
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, HashMap<uint32_t, ArticleMeta> &metadata) {
   size_t filesread = 0;
   for (auto it : metadata) {
     uint32_t fileId = it.first;

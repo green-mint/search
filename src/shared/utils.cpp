@@ -45,22 +45,22 @@ void loadLexicon(HashMap<string, uint32_t> &lexiconMap) {
   }
 }
 
-void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata) {
-  for (auto &article : metadata) {
-    string title = article.second.title;
-    string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
-    if (checkTitle(lowerSpaceRemovedTitle)) {
-      // cout << title << endl;
-      // cout << lowerSpaceRemovedTitle << endl;
-      trie.insert(lowerSpaceRemovedTitle);
-    }
-  }
+// void populateTrie(Trie &trie, const HashMap<uint32_t, ArticleMeta> &metadata) {
+//   for (auto &article : metadata) {
+//     string title = article.second.title;
+//     string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
+//     if (checkTitle(lowerSpaceRemovedTitle)) {
+//       // cout << title << endl;
+//       // cout << lowerSpaceRemovedTitle << endl;
+//       trie.insert(lowerSpaceRemovedTitle);
+//     }
+//   }
 
-  cout << "Trie populated" << endl;
-}
+//   cout << "Trie populated" << endl;
+// }
 
 
-void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, unordered_map<string, uint32_t> &lexiconMap) {
+void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap) {
   DoublyLinkedList<string> queryWords;
   splitString(query, ' ', queryWords);
 
@@ -70,11 +70,11 @@ void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds
     string stemmedWord;
     stemWord(word, stemmedWord);
 
-    stemmedQuery.push_back(stemmedWord);
+    stemmedQuery.push_back(toLower(stemmedWord));
   }
 
   for (auto head = stemmedQuery.get_head(); head != nullptr; head = head->next) {
-    if (lexiconMap[head->data]) {
+    if (lexiconMap.find(head->data)) {
       fileIds.push_back(lexiconMap[head->data]);
       words.push_back(head->data);
     }
@@ -82,6 +82,123 @@ void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds
 
 }
 
-void loadMetadata(unordered_map<uint32_t, ArticleMeta> &metadata) {
+void loadMetadata(HashMap<uint32_t, ArticleMeta> &metadata) {
   populateMetadata(METADATA_FILENAME, metadata);
+}
+
+bool compareTitleWithQuery(const string &articleTitle, DoublyLinkedList<string> words) {
+  DoublyLinkedList<string> articleWords;
+  splitString(articleTitle, ' ', articleWords);
+
+  int counter = 0;
+  for (auto head = words.get_head(); head != nullptr; head = head->next) {
+    if (articleWords.find(head->data)) {
+      counter++;
+    }
+  }
+
+  return counter == words.size();
+}
+
+
+void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata) {
+  DoublyLinkedList<Set<uint32_t> *> articlesContainer;
+  // holds articleIds
+  Set<uint32_t> *resultSet = new Set<uint32_t>(SAMPLE_SIZE);
+
+
+  string line;
+  for (auto wordIdHead = wordFileIds.get_head(); wordIdHead != nullptr; wordIdHead = wordIdHead->next) {
+    uint32_t wordId = wordIdHead->data;
+    // cout << "WordId: " << wordId << endl;
+
+    {
+      Set<uint32_t> *articles = new Set<uint32_t>(SAMPLE_SIZE);
+      size_t counter = 0;
+      io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> > in(INVERTED_INDICES_DIR + to_string(wordId) + ".csv");
+
+      in.read_header(io::ignore_extra_column, "fileId");
+      while (in.read_row(line) && ++counter < SAMPLE_SIZE) {
+        articles->insert(stoi(line));
+      }
+
+      articlesContainer.push_back(articles);
+    }
+
+  }
+
+  // for (auto articlesContainerHead = articlesContainer.get_head(); articlesContainerHead != nullptr; articlesContainerHead = articlesContainerHead->next) {
+  //   Set<uint32_t> *articles = articlesContainerHead->data;
+  //   size_t length = articles->length;
+  //   Node<uint32_t, bool> **head = articles->getHead();
+
+  //   for (size_t i = 0; i < length; i++) {
+  //     uint32_t fileId = head[i]->key;
+  //     ArticleMeta article = metadata[fileId];
+  //     // cout << article.title << endl;
+  //     // if (compareTitleWithQuery(article.title, words)) {
+  //     //   resultSet->insert(fileId);
+  //     // }
+  //   }
+
+  // }
+
+  // Maintains a list of resultSets that are dynamically allocated and then will later to be freed
+  Set<uint32_t> **arrToFree = new Set<uint32_t>*[words.size()];
+  int counter = 0;
+
+  Set<uint32_t> *s0, *s1;
+
+  // Two booleans to ensure the intersections work correctly and the query is strictly conjunctive 
+  bool initiallyTwo = articlesContainer.size() >= 2;
+  bool isFirst = true;
+
+  // Iterate through the list of sets and basically takes the intersection of each set with the previous set, or the result of previous set
+  // in case of query words > 2
+  s0 = articlesContainer.pop_front();
+  while (isFirst && initiallyTwo && articlesContainer.size() > 0) {
+    if (!isFirst)
+      resultSet = new Set<uint32_t>(SAMPLE_SIZE);
+
+    s1 = articlesContainer.pop_front();
+    Set<uint32_t>::intersection(*s0, *s1, *resultSet);
+    s0 = resultSet;
+    arrToFree[counter++] = resultSet;
+
+    isFirst = false;
+  }
+
+  if (isFirst && !initiallyTwo) {
+    resultSet = s0;
+  }
+
+  cout << "Result set length: " << resultSet->length << endl;
+
+  // Prints the final result along with the title of the article and it's filename 
+  Node<uint32_t, bool> **resultSetHead = resultSet->getHead();
+  for (size_t i = 0; i < resultSet->length; i++) {
+    uint32_t fileId = resultSetHead[i]->key;
+    ArticleMeta article = metadata[fileId];
+    cout << "[" << article.filename << ".txt]\t" << article.title << endl;
+  }
+
+  // Frees the memory  
+  for (int i = 0; i < counter; i++) {
+    delete arrToFree[i];
+  }
+}
+
+void populateMetadata(const string &in_filename, HashMap<uint32_t, ArticleMeta> &metadata) {
+  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(in_filename.c_str());
+  in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
+
+  uint32_t id;
+  string  title, filename, updated_at;
+  while (in.read_row(id, title, filename, updated_at)) {
+    toISODate(updated_at);
+    filename = toLower(filename);
+    ArticleMeta article(id, title, filename, date_from_iso_string(updated_at));
+    // metadata[id] = article;
+    metadata.insert(id, article);
+  }
 }

@@ -48,12 +48,26 @@ public:
   Node<K, V> **nodes;
   int numNodes;
   std::hash<K> hashFunc;
+  std::function<bool(Node<K, V>, Node<K, V>)> cmpFunc;
 
-  HashMap(int _size) {
+  HashMap(int _size = 100) {
     buckets = new Bucket<K, V>[_size];
     numBuckets = _size;
     nodes = new Node<K, V>*[numBuckets];
     numNodes = 0;
+
+    cmpFunc = [](Node<K, V> a, Node<K, V> b) {
+      return a.key < b.key;
+    };
+  }
+
+  HashMap(int _size, std::function<bool(Node<K, V>, Node<K, V>)> cmpFunc) {
+    buckets = new Bucket<K, V>[_size];
+    numBuckets = _size;
+    nodes = new Node<K, V>*[numBuckets];
+    numNodes = 0;
+
+    this->cmpFunc = cmpFunc;
   }
 
   ~HashMap() {
@@ -64,6 +78,24 @@ public:
   // module of the bytes of the key
   int hash(K key) {
     return hashFunc(key) % numBuckets;
+  }
+
+  void remove(K key) {
+    int bucketIndex = hash(key);
+    Node<K, V> *curr = buckets[bucketIndex].head;
+    Node<K, V> *prev = nullptr;
+
+    while (curr != NULL) {
+      if (curr->key == key) {
+        if (prev != nullptr) {
+          prev->nextBucketNode = curr->nextBucketNode;
+        }
+        delete curr;
+        break;
+      }
+      prev = curr;
+      curr = curr->nextBucketNode;
+    }
   }
 
   void insert(K key, V value) {
@@ -114,7 +146,7 @@ public:
   void sortNodes() {
     for (int i = 0; i < numNodes; i++) {
       for (int j = i + 1; j < numNodes; j++) {
-        if (nodes[i]->key > nodes[j]->key) {
+        if (cmpFunc(nodes[i]->key, nodes[j]->key)) {
           Node<K, V> *temp = nodes[i];
           nodes[i] = nodes[j];
           nodes[j] = temp;
@@ -127,5 +159,9 @@ public:
     for (int i = 0; i < numNodes; i++) {
       std::cout << nodes[i]->key << " " << nodes[i]->value << std::endl;
     }
+  }
+
+  Node<K, V> **getHead() {
+    return nodes;
   }
 };
