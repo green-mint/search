@@ -7,14 +7,22 @@
 
 using namespace std;
 
+// inverted index loaded for searching 
 class InvertedIndex {
 public:
   struct FilesMap;
-
+  //  word id at what position added to file
   void addWord(const uint32_t wordId, uint32_t fileId, size_t position);
+
+ // get frequency position of a word
   FilesMap &searchWord(const uint32_t wordId);
+
+  // delete entry
   void deleteWord(const uint32_t wordId);
+
+  // print the index
   void print();
+  
   void writeToFile(const string &filename);
 
 public:
