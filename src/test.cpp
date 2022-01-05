@@ -1,5 +1,9 @@
 #include <iostream>
-#include <linkedlist.h>
+#include <unordered_set>
+#include <algorithm>
+#include <streambuf>
+#include <iterator>
+// #include <linkedlist.h>
 
 using namespace std;
 
@@ -8,22 +12,19 @@ struct Article {
 };
 
 int main() {
-  DoublyLinkedList<int> list;
-  list.push_front(1);
-  list.push_front(2);
-  list.push_back(5);
-  list.push_back(6);
-  list.print();
+  unordered_set <string> articles0;
+  articles0.insert(string{ "a" });
+  articles0.insert(string{ "b" });
+  articles0.insert(string{ "c" });
 
-  list.pop_back();
-  list.print();
+  unordered_set <string> articles1;
+  articles1.insert(string{ "a" });
+  articles1.insert(string{ "b" });
 
-  list.pop_front();
-  list.pop_front();
-  list.pop_front();
-  list.pop_front();
-  list.pop_front();
-  list.pop_front();
-  cout << "Szie" << list.size() << endl;
-  list.print();
+
+  auto  intersection = set_intersection(articles0.begin(), articles0.end(), articles1.begin(), articles1.end(), ostream_iterator<string>(cout, "\n"));
+
+  // for (auto &it : intersection) {
+  //   cout << it << endl;
+  // }
 }

@@ -7,6 +7,7 @@
 
 #include <csv.h>
 #include <utils.h>
+#include <stringutils.h>
 
 using namespace std;
 
@@ -102,13 +103,15 @@ void populateStopWords(const std::string &filename,
   }
 }
 
-void populateMetadata(const string &in_filename, unordered_map<string, ArticleMeta> &metadata) {
+void populateMetadata(const string &in_filename, unordered_map<uint32_t, ArticleMeta> &metadata) {
   io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(in_filename.c_str());
   in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
-  string id, title, filename, updated_at;
+  uint32_t id;
+  string  title, filename, updated_at;
   while (in.read_row(id, title, filename, updated_at)) {
     toISODate(updated_at);
+    filename = toLower(filename);
     ArticleMeta article(id, title, filename, date_from_iso_string(updated_at));
     metadata[id] = article;
   }

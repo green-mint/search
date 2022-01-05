@@ -1,14 +1,14 @@
 
 #include <invertedindex.h>
 
-void InvertedIndex::addWord(const uint32_t word, string &fileId, size_t position) {
+void InvertedIndex::addWord(const uint32_t wordId, uint32_t fileId, size_t position) {
   // if (index.find(word) == index.end()) {
   //   // No such word in the index
   //   FilesMap wordMap;
   //   index[word] = wordMap;
   // }
   // Word exists in the index
-  FilesMap &wordMap = index[word];
+  FilesMap &wordMap = index[wordId];
   if (wordMap.files.find(fileId) == wordMap.files.end()) {
     // No such file in the word map
     // FilesMap::WordDetail fileMap;
@@ -25,12 +25,12 @@ void InvertedIndex::addWord(const uint32_t word, string &fileId, size_t position
   }
 }
 
-InvertedIndex::FilesMap &InvertedIndex::searchWord(const uint32_t word) {
-  return index[word];
+InvertedIndex::FilesMap &InvertedIndex::searchWord(const uint32_t wordId) {
+  return index[wordId];
 }
 
-void InvertedIndex::deleteWord(const uint32_t word) {
-  index.erase(word);
+void InvertedIndex::deleteWord(const uint32_t wordId) {
+  index.erase(wordId);
 }
 
 void InvertedIndex::print() {
@@ -43,10 +43,10 @@ void InvertedIndex::print() {
   }
 }
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, ArticleMeta> &metadata) {
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<uint32_t, ArticleMeta> &metadata) {
   size_t filesread = 0;
   for (auto it : metadata) {
-    string fileId = it.first;
+    uint32_t fileId = it.first;
     ArticleMeta &article = it.second;
 
     ifstream file(CLEANED_ARTICLES_DIR + article.filename);

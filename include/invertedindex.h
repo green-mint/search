@@ -11,9 +11,9 @@ class InvertedIndex {
 public:
   struct FilesMap;
 
-  void addWord(const uint32_t word, string &fileId, size_t position);
-  FilesMap &searchWord(const uint32_t word);
-  void deleteWord(const uint32_t word);
+  void addWord(const uint32_t wordId, uint32_t fileId, size_t position);
+  FilesMap &searchWord(const uint32_t wordId);
+  void deleteWord(const uint32_t wordId);
   void print();
   void writeToFile(const string &filename);
 
@@ -24,7 +24,7 @@ public:
       list<size_t> positions;
     };
     // fileId, WordDetail
-    unordered_map<string, WordDetail> files;
+    unordered_map<uint32_t, WordDetail> files;
   };
 
   // TODO: Move this down
@@ -33,4 +33,4 @@ private:
   // wordId, FilesMap
 };
 
-void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<string, ArticleMeta> &metadata);
+void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, uint32_t> &lexicon, unordered_map<uint32_t, ArticleMeta> &metadata);

@@ -14,14 +14,14 @@ using namespace boost::gregorian;
 
 // Article 
 struct ArticleMeta {
-  string id;
+  uint32_t id;
   string title;
   string filename;
   date updated_at;
 
   ArticleMeta() { }
 
-  ArticleMeta(string id, string title, string filename, date updated_at) {
+  ArticleMeta(uint32_t id, string title, string filename, date updated_at) {
     this->id = id;
     this->title = title;
     this->filename = filename;
@@ -49,12 +49,10 @@ void toISODate(string &date);
 
 void stemWord(const string &input, string &output);
 
-void populateTrie(Trie &trie, const unordered_map<string, ArticleMeta> &metadata);
+void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata);
 
 void loadLexicon(unordered_map<string, uint32_t> &lexiconMap);
 
-void splitString(const string &input, char delimiter, DoublyLinkedList<string> &output);
-
-void loadMetadata(unordered_map<string, ArticleMeta> &metadata);
+void loadMetadata(unordered_map<uint32_t, ArticleMeta> &metadata);
 
 void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, unordered_map<string, uint32_t> &lexiconMap);

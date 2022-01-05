@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <csv.h>
-#include <trie.h
+#include <trie.h>
 #include <utils.h>
 #include <invertedindex.h>
 #include <indexing.h>
@@ -16,6 +16,10 @@ int main() {
   unordered_map<string, uint32_t> lexiconMap;
   loadLexicon(lexiconMap);
 
+  cout << "Loading metadata..." << endl;
+  unordered_map<uint32_t, ArticleMeta> metadata;
+  loadMetadata(metadata);
+
   string userQuery;
   userQuery.reserve(128);
   cout << "Enter a query: ";
@@ -28,6 +32,12 @@ int main() {
   words.print();
   fileIds.print();
 
+  // blue balls america mouth
+  // blue -> wordId
+  // balls -> wordId
+  // america -> wordId
+  // mouth -> wordId
+
   for (auto head = fileIds.get_head(); head != nullptr; head = head->next) {
     string filename = INVERTED_INDICES_DIR + to_string(head->data) + ".csv";
     ifstream file(filename);
@@ -36,6 +46,14 @@ int main() {
     string line;
     while (getline(file, line)) {
       cout << line << endl;
+
+      //wordId, fileId, frequency, positions
+      // 1, 1
+      // 1, 100
+      // 1, 134
+      // 1, 113334
+      // 1, 1212121
+
     }
 
     cin.get();

@@ -4,6 +4,7 @@
 #include <trie.h>
 #include <utils.h>
 #include <fstream>
+#include <indexing.h>
 
 static wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 static stemming::english_stem<> stemmer;
@@ -43,15 +44,7 @@ void loadLexicon(unordered_map<string, uint32_t> &lexiconMap) {
   }
 }
 
-void splitString(const string &input, char delimiter, DoublyLinkedList<string> &output) {
-  stringstream ss(input);
-  string item;
-  while (getline(ss, item, delimiter)) {
-    output.push_back(item);
-  }
-}
-
-void populateTrie(Trie &trie, const unordered_map<string, ArticleMeta> &metadata) {
+void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata) {
   for (auto &article : metadata) {
     string title = article.second.title;
     string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
@@ -86,4 +79,8 @@ void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds
     }
   }
 
+}
+
+void loadMetadata(unordered_map<uint32_t, ArticleMeta> &metadata) {
+  populateMetadata(METADATA_FILENAME, metadata);
 }
