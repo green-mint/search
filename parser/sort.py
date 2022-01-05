@@ -3,7 +3,7 @@ import sys
 import csv
 from datetime import datetime
 
-filename = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/indexing/inverted-index-remake-complete.csv"
+filename = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/indexing/inverted-index-remake-complete-pakka-wala.csv"
 out_filename = "/mnt/d/OneDrive/OneDrive - National University of Sciences & Technology/NUST/3 Semester/DSA/Project/search-engine/data/indexing/inverted-index-cleaned.csv"
 
 
@@ -19,7 +19,7 @@ def main():
         for row in csvreader:
             wordId, fileId, frequency, positions = row
             positions = ",".join([pos for pos in positions.split(',') if pos])
-            row = [int(wordId), fileId, frequency, positions]
+            row = [int(wordId), fileId, int(frequency), positions]
             rows.append(row)
 
         # lines = f.readlines()
@@ -39,8 +39,8 @@ def main():
     difference = datetime.now() - now
     now = datetime.now()
     print(datetime.now(), "Sorting array...", difference)
-    rows.sort(key=lambda x: x[0])
-    # rows.sort(key=lambda x: (x[0], x[2]))
+    # rows.sort(key=lambda x: x[0])
+    rows.sort(key=lambda x: (x[0], -x[2]))
 
     difference = datetime.now() - now
     print(datetime.now(), "Writing file...", difference)

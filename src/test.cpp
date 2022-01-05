@@ -1,6 +1,5 @@
 #include <iostream>
-#include <unordered_map>
-#include <csv.h>
+#include <linkedlist.h>
 
 using namespace std;
 
@@ -8,20 +7,23 @@ struct Article {
   string name;
 };
 
-
-
-void foo(unordered_map<string, uint32_t> &some_map) {
-  some_map["bar"] = 0;
-  some_map["baz"] = 1;
-}
-
 int main() {
-  unordered_map<string, uint32_t> some_map;
-  foo(some_map);
+  DoublyLinkedList<int> list;
+  list.push_front(1);
+  list.push_front(2);
+  list.push_back(5);
+  list.push_back(6);
+  list.print();
 
-  for (auto &it : some_map) {
-    cout << it.first << " " << it.second << endl;
-  }
-  string key = "foo";
-  cout << "foo" << " " << some_map[key] << endl;
+  list.pop_back();
+  list.print();
+
+  list.pop_front();
+  list.pop_front();
+  list.pop_front();
+  list.pop_front();
+  list.pop_front();
+  list.pop_front();
+  cout << "Szie" << list.size() << endl;
+  list.print();
 }

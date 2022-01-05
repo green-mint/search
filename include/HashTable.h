@@ -1,7 +1,6 @@
 #pragma once 
 
 #include <iostream>
-#include "LinkedList.h"
 
 #define HASH_TABLE_NULL 0x0
 

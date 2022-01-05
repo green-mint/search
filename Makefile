@@ -33,6 +33,9 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INCLUDE_DIR)/*.h
 	$(CC) -o $(BIN_DIR)/$@ $(CFLAGS) $(OBJ_DIR)/$@.o $(OBJ_FILES)
 
 
+test: test
+preprocessor: preprocessor
+
 run: $(MAIN_BIN)
 	$(BIN_DIR)/$(MAIN_BIN)
 
