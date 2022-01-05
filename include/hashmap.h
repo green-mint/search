@@ -50,7 +50,7 @@ public:
   std::hash<K> hashFunc;
   std::function<bool(Node<K, V>, Node<K, V>)> cmpFunc;
 
-  HashMap(int _size) {
+  HashMap(int _size = 100) {
     buckets = new Bucket<K, V>[_size];
     numBuckets = _size;
     nodes = new Node<K, V>*[numBuckets];

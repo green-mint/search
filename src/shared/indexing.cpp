@@ -1,6 +1,6 @@
 
 #include <fstream>
-#include <unordered_map>
+
 #include <indexing.h>
 #include <paths.h>
 
@@ -11,8 +11,8 @@
 using namespace std;
 
 void generateLexicon(const string &metadataFilename,
-  unordered_map<string, uint32_t> &lexiconMap,
-  unordered_map<string, char> &stopWords) {
+  HashMap<string, uint32_t> &lexiconMap,
+  HashMap<string, char> &stopWords) {
 
   cout << "Generating lexicon..." << endl;
   uint32_t wordId = 1;
@@ -92,7 +92,7 @@ wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 stemming::english_stem<> stemmer;
 
 void populateStopWords(const std::string &filename,
-  std::unordered_map<std::string, char> &stopWords) {
+  HashMap<string, char> &stopWords) {
   io::CSVReader<1> in(filename.c_str());
   in.read_header(io::ignore_extra_column, "words");
 

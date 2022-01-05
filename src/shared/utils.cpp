@@ -45,19 +45,19 @@ void loadLexicon(HashMap<string, uint32_t> &lexiconMap) {
   }
 }
 
-void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata) {
-  for (auto &article : metadata) {
-    string title = article.second.title;
-    string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
-    if (checkTitle(lowerSpaceRemovedTitle)) {
-      // cout << title << endl;
-      // cout << lowerSpaceRemovedTitle << endl;
-      trie.insert(lowerSpaceRemovedTitle);
-    }
-  }
+// void populateTrie(Trie &trie, const HashMap<uint32_t, ArticleMeta> &metadata) {
+//   for (auto &article : metadata) {
+//     string title = article.second.title;
+//     string lowerSpaceRemovedTitle = lowerAndRemoveSpace(title);
+//     if (checkTitle(lowerSpaceRemovedTitle)) {
+//       // cout << title << endl;
+//       // cout << lowerSpaceRemovedTitle << endl;
+//       trie.insert(lowerSpaceRemovedTitle);
+//     }
+//   }
 
-  cout << "Trie populated" << endl;
-}
+//   cout << "Trie populated" << endl;
+// }
 
 
 void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap) {
@@ -103,6 +103,7 @@ bool compareTitleWithQuery(const string &articleTitle, DoublyLinkedList<string> 
 
 void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata) {
   DoublyLinkedList<Set<uint32_t> *> articlesContainer;
+  // holds articleIds
   Set<uint32_t> *resultSet = new Set<uint32_t>(SAMPLE_SIZE);
 
 
@@ -126,28 +127,34 @@ void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &w
 
   }
 
-  for (auto articlesContainerHead = articlesContainer.get_head(); articlesContainerHead != nullptr; articlesContainerHead = articlesContainerHead->next) {
-    Set<uint32_t> *articles = articlesContainerHead->data;
-    size_t length = articles->length;
-    Node<uint32_t, bool> **head = articles->getHead();
+  // for (auto articlesContainerHead = articlesContainer.get_head(); articlesContainerHead != nullptr; articlesContainerHead = articlesContainerHead->next) {
+  //   Set<uint32_t> *articles = articlesContainerHead->data;
+  //   size_t length = articles->length;
+  //   Node<uint32_t, bool> **head = articles->getHead();
 
-    for (size_t i = 0; i < length; i++) {
-      uint32_t fileId = head[i]->key;
-      ArticleMeta article = metadata[fileId];
-      // cout << article.title << endl;
-      // if (compareTitleWithQuery(article.title, words)) {
-      //   resultSet->insert(fileId);
-      // }
-    }
+  //   for (size_t i = 0; i < length; i++) {
+  //     uint32_t fileId = head[i]->key;
+  //     ArticleMeta article = metadata[fileId];
+  //     // cout << article.title << endl;
+  //     // if (compareTitleWithQuery(article.title, words)) {
+  //     //   resultSet->insert(fileId);
+  //     // }
+  //   }
 
-  }
+  // }
 
+  // Maintains a list of resultSets that are dynamically allocated and then will later to be freed
   Set<uint32_t> **arrToFree = new Set<uint32_t>*[words.size()];
   int counter = 0;
 
   Set<uint32_t> *s0, *s1;
+
+  // Two booleans to ensure the intersections work correctly and the query is strictly conjunctive 
   bool initiallyTwo = articlesContainer.size() >= 2;
   bool isFirst = true;
+
+  // Iterate through the list of sets and basically takes the intersection of each set with the previous set, or the result of previous set
+  // in case of query words > 2
   s0 = articlesContainer.pop_front();
   while (isFirst && initiallyTwo && articlesContainer.size() > 0) {
     if (!isFirst)
@@ -167,14 +174,31 @@ void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &w
 
   cout << "Result set length: " << resultSet->length << endl;
 
+  // Prints the final result along with the title of the article and it's filename 
   Node<uint32_t, bool> **resultSetHead = resultSet->getHead();
   for (size_t i = 0; i < resultSet->length; i++) {
     uint32_t fileId = resultSetHead[i]->key;
     ArticleMeta article = metadata[fileId];
-    cout << article.title << endl;
+    cout << "[" << article.filename << ".txt]\t" << article.title << endl;
   }
 
+  // Frees the memory  
   for (int i = 0; i < counter; i++) {
     delete arrToFree[i];
+  }
+}
+
+void populateMetadata(const string &in_filename, HashMap<uint32_t, ArticleMeta> &metadata) {
+  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'> >in(in_filename.c_str());
+  in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
+
+  uint32_t id;
+  string  title, filename, updated_at;
+  while (in.read_row(id, title, filename, updated_at)) {
+    toISODate(updated_at);
+    filename = toLower(filename);
+    ArticleMeta article(id, title, filename, date_from_iso_string(updated_at));
+    // metadata[id] = article;
+    metadata.insert(id, article);
   }
 }

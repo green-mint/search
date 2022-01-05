@@ -8,14 +8,14 @@ SRC_SHARED_DIR=./src/shared
 OBJ_DIR=./obj
 BIN_DIR=./bin
 
-OBJ_FILES=$(OBJ_DIR)/trie.o $(OBJ_DIR)/utils.o $(OBJ_DIR)/indexing.o $(OBJ_DIR)/invertedindex.o $(OBJ_DIR)/stringutils.o 
+OBJ_FILES=$(OBJ_DIR)/trie.o $(OBJ_DIR)/utils.o $(OBJ_DIR)/stringutils.o 
 
 MAIN_BIN=main
 
 INCLUDE_DIR_FLAGS=-I$(INCLUDE_DIR)
 LINKER_FLAGS=-pthread -lboost_date_time
 
-CFLAGS=-Wall -Wextra -Wpedantic -g $(OPTIMIZATION) $(LINKER_FLAGS) $(INCLUDE_DIR_FLAGS)
+CFLAGS=-Wno-return-type -g $(OPTIMIZATION) $(LINKER_FLAGS) $(INCLUDE_DIR_FLAGS)
 
 .PRECIOUS: $(OBJ_DIR)/%.o
 

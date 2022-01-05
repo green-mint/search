@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <codecvt>
-#include <unordered_map>
+
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <olestem/stemming/english_stem.h>
 #include <paths.h>
@@ -37,10 +37,11 @@ struct ArticleMeta {
 };
 
 void toISODate(string &date);
+void populateMetadata(const string &filename, HashMap<uint32_t, ArticleMeta> &metadata);
 
 void stemWord(const string &input, string &output);
 
-void populateTrie(Trie &trie, const unordered_map<uint32_t, ArticleMeta> &metadata);
+void populateTrie(Trie &trie, const HashMap<uint32_t, ArticleMeta> &metadata);
 
 void loadLexicon(HashMap<string, uint32_t> &lexiconMap);
 
@@ -52,3 +53,4 @@ void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds
 void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata);
 
 bool compareTitleWithQuery(const string &articleTitle, DoublyLinkedList<string> words, Set<string> *articleWordsSet, Set<string> *queryWordsSet, Set<string> *intersectionSet);
+

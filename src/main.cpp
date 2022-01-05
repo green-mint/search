@@ -1,5 +1,5 @@
 #include <iostream>
-#include <unordered_map>
+
 #include <hashmap.h>
 #include <csv.h>
 #include <trie.h>
@@ -29,6 +29,8 @@ int main() {
 
   DoublyLinkedList<uint32_t> wordFileIds;
   DoublyLinkedList<string> words;
+  // lexicon [word] -> wordId
+  // short description => wordFileIds = {1, 2}
   getFileIdFromQuery(userQuery, wordFileIds, words, lexiconMap);
 
   fetchResults(words, wordFileIds, metadata);
