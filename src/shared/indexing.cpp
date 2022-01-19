@@ -12,8 +12,8 @@ using namespace std;
 
 // lexicon is unique wordid for each word
 void generateLexicon(const string &metadataFilename,
-                     HashMap<string, uint32_t> &lexiconMap,
-                     HashMap<string, char> &stopWords)
+  HashMap<string, uint32_t> &lexiconMap,
+  HashMap<string, char> &stopWords)
 {
 
   cout << "Generating lexicon..." << endl;
@@ -28,7 +28,21 @@ void generateLexicon(const string &metadataFilename,
 
   io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(metadataFilename.c_str());
 
+
   in.read_header(io::ignore_extra_column, "filename");
+
+  // open lexicon file 
+  ofstream output;
+  string lexiconFilename = INDEXING_DIR + "lexicon.csv";
+
+  cout << "Writing to " << lexiconFilename << endl;
+
+  output.open(lexiconFilename);
+  if (!output.is_open())
+  {
+    cout << "ERROR: Output file cannot be opened" << endl;
+    return;
+  }
 
   int iterations = 0;
 
@@ -59,43 +73,37 @@ void generateLexicon(const string &metadataFilename,
 
     // cout << "Filename: " << filename << endl;
     while (file >> originalWord)
-    { 
+    {
       // stem the word
       stemWord(originalWord, stemmedWord);
 
-  // if word is not a common word and not already in map
-  // put it in map
+      // if word is not a common word and not already in map
+      // put it in map
       if (!stopWords[stemmedWord])
-        if (!lexiconMap[stemmedWord])
+        if (!lexiconMap[stemmedWord]) {
+          output << "word,wordId" << endl;
           lexiconMap[stemmedWord] = wordId++;
+          output << stemmedWord << "," << wordId << endl;
+
+
+        }
     }
 
     file.close();
   }
   return;
- // open lexicon file 
-  ofstream output;
-  string lexiconFilename = INDEXING_DIR + "lexicon.csv";
 
-  cout << "Writing to " << lexiconFilename << endl;
+  // iterate and save lexicon to csv file
+   // output << "word,wordId" << endl;
+   // for (auto &it : lexiconMap)
+   // {
+   //   // cout << it->first << ", " << it->second << endl;
+   //   output << it.first << "," << it.second << "\n";
+   // }
 
-  output.open(lexiconFilename);
-  if (!output.is_open())
-  {
-    cout << "ERROR: Output file cannot be opened" << endl;
-    return;
-  }
- // iterate and save lexicon to csv file
-  output << "word,wordId" << endl;
-  for (auto &it : lexiconMap)
-  {
-    // cout << it->first << ", " << it->second << endl;
-    output << it.first << "," << it.second << "\n";
-  }
+   // [fileId, frequency], wordId
 
-  // [fileId, frequency], wordId
-
-  // wordId, [fileId, frequency]
+   // wordId, [fileId, frequency]
 
   output.close();
 }
@@ -104,7 +112,7 @@ wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 stemming::english_stem<> stemmer;
 
 void populateStopWords(const std::string &filename,
-                       HashMap<string, char> &stopWords)
+  HashMap<string, char> &stopWords)
 { // load stop words from file to map
   io::CSVReader<1> in(filename.c_str());
   in.read_header(io::ignore_extra_column, "words");

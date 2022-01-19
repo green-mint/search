@@ -4,6 +4,7 @@
 #include <list>
 
 #include <utils.h>
+#include <DoublyLinkedList.h>
 
 using namespace std;
 
@@ -14,22 +15,22 @@ public:
   //  word id at what position added to file
   void addWord(const uint32_t wordId, uint32_t fileId, size_t position);
 
- // get frequency position of a word
+  // get frequency position of a word
   FilesMap &searchWord(const uint32_t wordId);
 
   // delete entry
   void deleteWord(const uint32_t wordId);
 
-  // print the index
+  // print the indexP
   void print();
-  
+
   void writeToFile(const string &filename);
 
 public:
   struct FilesMap {
     struct WordDetail {
       size_t frequency = 0;
-      list<size_t> positions;
+      DoublyLinkedList<size_t> positions;
     };
     // fileId, WordDetail
     HashMap<uint32_t, WordDetail> files;

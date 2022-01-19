@@ -10,42 +10,43 @@
 
 using namespace std;
 
-int main()
-{
-  cout << "Hashmap-uh!" << endl;
+int main(int argc, char *argv[]) {
 
-  cout << "Loading lexicon..." << endl;
-  HashMap<string, uint32_t> lexiconMap(LEXICON_SIZE);
-  loadLexicon(lexiconMap);
+  if (argc < 2) {
+    cout << "Usage: [-c (Article Suggestion)] <word>" << endl;
+    return 0;
+  }
+
+  string word;
+  if (string(argv[1]) == "-c") {
+    Trie *trie = new Trie();
+    populateTrie(*trie);
+
+    word = string(argv[2]);
+
+    cout << "Suggestions for: " << endl;
+    trie->prefixSearch(trie->root, word);
+  }
+  else {
+    cout << "Loading lexicon..." << endl;
+    HashMap<string, uint32_t> lexiconMap(LEXICON_SIZE);
+    loadLexicon(lexiconMap);
 
 
-  cout << "Loading metadata..." << endl;
-  HashMap<uint32_t, ArticleMeta> metadata(METADATA_SIZE);
-  loadMetadata(metadata);
+    cout << "Loading metadata..." << endl;
+    HashMap<uint32_t, ArticleMeta> metadata(METADATA_SIZE);
+    loadMetadata(metadata);
 
-  string userQuery;
-  userQuery.reserve(128);
-  cout << "Enter a query: ";
-  getline(cin, userQuery);
+    word = string(argv[1]);
 
-  DoublyLinkedList<uint32_t> wordFileIds;
-  DoublyLinkedList<string> words;
-  // lexicon [word] -> wordId
-  // short description => wordFileIds = {1, 2}
-  getFileIdFromQuery(userQuery, wordFileIds, words, lexiconMap);
+    // Stores the wordIds of the words the user entered
+    DoublyLinkedList<uint32_t> wordIds;
 
-  fetchResults(words, wordFileIds, metadata);
+    // Stores the stemmed and lowered cased words
+    DoublyLinkedList<string> words;
 
-  // string suggestionsFor;
-  // Trie trie;
-  // populateTrie(trie);
-  
-  // while(1){
-  //   cout << "Suggestions for: ";
-  //   getline(cin, suggestionsFor);
-  //   trie.prefixSearch(trie.root, suggestionsFor);
+    getWordIdsFromQuery(word, wordIds, words, lexiconMap);
 
-  // }
-
-  return 0;
+    fetchResults(words, wordIds, metadata);
+  }
 }

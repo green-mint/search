@@ -55,7 +55,7 @@ void loadLexicon(HashMap<string, uint32_t> &lexiconMap);
 void loadMetadata(HashMap<uint32_t, ArticleMeta> &metadata);
 
 // file id of words 
-void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap);
+void getWordIdsFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap);
 
 //get final resutls
 void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata);

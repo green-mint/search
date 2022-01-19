@@ -77,7 +77,7 @@ void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, u
     while (getline(file, line))
     {
       position = 0;
-      for (segment = strtok((char *)line.c_str(), " "); segment != NULL; segment = strtok(NULL, " "))
+      for (segment = strtok((char *) line.c_str(), " "); segment != NULL; segment = strtok(NULL, " "))
       {
         originalWord = string(segment);
         stemWord(originalWord, stemmedWord);
@@ -96,8 +96,8 @@ void populateInvertedIndex(InvertedIndex &invertedIndex, unordered_map<string, u
 
       // cout << "Processed " << article.filename << endl;
     }
-    if (++filesread == 100000)
-      break;
+    // if (++filesread == 100000)
+    //   break;
   }
 }
 
@@ -106,12 +106,12 @@ void InvertedIndex::writeToFile(const string &filename)
   // make csv file
   ofstream file(filename);
   file << "wordId"
-       << ","
-       << "fileId"
-       << ","
-       << "frequency"
-       << ","
-       << "positions" << endl;
+    << ","
+    << "fileId"
+    << ","
+    << "frequency"
+    << ","
+    << "positions" << endl;
   string wordId, fileId, frequency, positions;
   positions.reserve(256);
 
@@ -119,7 +119,7 @@ void InvertedIndex::writeToFile(const string &filename)
   for (auto &it0 : index)
   {
     for (auto &it1 : it0.second.files)
-    // for each file
+      // for each file
     {
       // wordId = to_string( it0.first;
       // fileId = it1.first;

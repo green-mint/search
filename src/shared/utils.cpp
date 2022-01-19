@@ -14,13 +14,13 @@ static stemming::english_stem<> stemmer;
 void toISODate(std::string &date)
 { // convert to date format
   std::stringstream ss;
-  char *dateString = (char *)date.c_str();
+  char *dateString = (char *) date.c_str();
 
   char *segment;
   size_t counter = 0;
   // tokenize the date
   for (segment = strtok(dateString, "-T"); segment != NULL && counter < 3;
-       segment = strtok(NULL, "-T"))
+    segment = strtok(NULL, "-T"))
   {
     ss << string(segment);
     counter++;
@@ -73,7 +73,7 @@ void populateTrie(Trie &trie)
   cout << "Trie populated" << endl;
 }
 
-void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap)
+void getWordIdsFromQuery(const string &query, DoublyLinkedList<uint32_t> &wordIds, DoublyLinkedList<string> &words, HashMap<string, uint32_t> &lexiconMap)
 {
   // split the words and store in list
   DoublyLinkedList<string> queryWords;
@@ -95,7 +95,7 @@ void getFileIdFromQuery(const string &query, DoublyLinkedList<uint32_t> &fileIds
   {
     if (lexiconMap.find(head->data))
     { // store file ids
-      fileIds.push_back(lexiconMap[head->data]);
+      wordIds.push_back(lexiconMap[head->data]);
       words.push_back(head->data);
     }
   }
@@ -124,7 +124,7 @@ bool compareTitleWithQuery(const string &articleTitle, DoublyLinkedList<string> 
   return counter == words.size();
 }
 
-void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordFileIds, HashMap<uint32_t, ArticleMeta> &metadata)
+void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &wordIds, HashMap<uint32_t, ArticleMeta> &metadata)
 {
   // a list of sets for each article
   DoublyLinkedList<Set<uint32_t> *> articlesContainer;
@@ -134,7 +134,7 @@ void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &w
 
   string line;
   //file id for each word iterated
-  for (auto wordIdHead = wordFileIds.get_head(); wordIdHead != nullptr; wordIdHead = wordIdHead->next)
+  for (auto wordIdHead = wordIds.get_head(); wordIdHead != nullptr; wordIdHead = wordIdHead->next)
   {
     uint32_t wordId = wordIdHead->data;
     // cout << "WordId: " << wordId << endl;
@@ -144,7 +144,7 @@ void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &w
       size_t counter = 0;
       io::CSVReader<1, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(INVERTED_INDICES_DIR + to_string(wordId) + ".csv");
       // read csv and get fileIDs
-      in.read_header(io::ignore_extra_column, "fileId");
+      in.read_header(io::ignore_extra_column, "fileId"); // fileId -> articleId
       while (in.read_row(line) && ++counter < SAMPLE_SIZE)
       { // iterate and insert to set
         articles->insert(stoi(line));
@@ -220,15 +220,15 @@ void fetchResults(DoublyLinkedList<string> &words, DoublyLinkedList<uint32_t> &w
 }
 
 void populateMetadata(const string &in_filename, HashMap<uint32_t, ArticleMeta> &metadata)
-{ 
+{
   // read csv file of metadata
-  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(in_filename.c_str());
+  io::CSVReader<4, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in(in_filename);
   in.read_header(io::ignore_extra_column, "id", "title", "filename", "updated_at");
 
   uint32_t id;
   string title, filename, updated_at;
   while (in.read_row(id, title, filename, updated_at))
-  { 
+  {
     // insert into metadata hashmap
     toISODate(updated_at);
     filename = toLower(filename);
